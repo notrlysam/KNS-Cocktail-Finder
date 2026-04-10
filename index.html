@@ -1,18 +1,192 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
-  </head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="KNS Cocktail Finder - Discover cocktail recipes">
+    <title>KNS Cocktail Finder</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
 
-  <body>
+<nav>
+    <a href="index.html" class="nav-brand">🍹 KNS Cocktails</a>
 
-    
-    <script src="" async defer></script>
-  </body>
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="#explore">Explore</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="login.html" class="btn btn-gold" id="nav-login-btn">Login</a>
+
+        <div id="nav-user-area" style="display:none; align-items:center; gap:10px;">
+            <span style="color:#9b9b8e; font-size:0.88rem;">Hi, <strong style="color:#c9a84c;">Bob</strong></span>
+            <a href="dashboard.html" class="btn btn-outline">Dashboard</a>
+            <button onclick="logout()" class="btn btn-outline">Logout</button>
+        </div>
+    </div>
+</nav>
+
+<div class="hero">
+    <p class="eyebrow">Discover &amp; Explore</p>
+    <h1>Find Your Perfect <span>Cocktail</span></h1>
+    <p class="subtitle">Browse hundreds of cocktail recipes, save your favourites, and try something new.</p>
+
+    <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Search cocktails... e.g. Margarita">
+        <button onclick="searchCocktails()">Search</button>
+    </div>
+
+    <div class="filters">
+        <button class="filter-btn active" onclick="filterClick(this, 'popular')">Popular</button>
+        <button class="filter-btn" onclick="filterClick(this, 'Cocktail')">Cocktail</button>
+        <button class="filter-btn" onclick="filterClick(this, 'Shot')">Shot</button>
+        <button class="filter-btn" onclick="filterClick(this, 'Punch / Party Drink')">Punch</button>
+        <button class="filter-btn" onclick="filterClick(this, 'Non_Alcoholic')">Non-Alcoholic</button>
+    </div>
+</div>
+
+<div class="section" id="explore">
+    <div class="section-header">
+        <h2>Popular <span>Cocktails</span></h2>
+        <span class="result-count" id="result-count"></span>
+    </div>
+    <div class="card-grid" id="cocktail-grid">
+        <p class="loading-msg">Loading cocktails...</p>
+    </div>
+</div>
+
+<footer>
+    <span>KNS Cocktails</span> &bull; Powered by TheCocktailDB &bull; INFO 1601 &bull; KNS Innovations
+</footer>
+
+<script src="js/app.js"></script>
+<script>
+    const API = "https://www.thecocktaildb.com/api/json/v1/1";
+
+    updateNavbar();
+
+    function buildCard(drink) {
+        const saved = isFavourite(drink.idDrink);
+        const icon = saved ? "♥" : "♡";
+        const cls = saved ? "bookmark-btn saved" : "bookmark-btn";
+
+        return `
+            <div class="cocktail-card">
+                <div class="card-img-wrap">
+                    <img src="${drink.strDrinkThumb}" alt="${drink.strDrink}" loading="lazy">
+                    <button class="${cls}" id="bm-${drink.idDrink}" onclick="handleBookmark('${drink.idDrink}')">${icon}</button>
+                </div>
+                <div class="card-info">
+                    <p class="card-name">${drink.strDrink}</p>
+                    <p class="card-category">${drink.strCategory || ""}</p>
+                    <a href="account.html?id=${drink.idDrink}" class="btn-card">View Recipe</a>
+                </div>
+            </div>`;
+    }
+
+    function drawCards(drinks) {
+        const grid = document.querySelector("#cocktail-grid");
+        const countEl = document.querySelector("#result-count");
+
+        if (!drinks || drinks.length === 0) {
+            grid.innerHTML = `<p class="loading-msg">No cocktails found.</p>`;
+            countEl.textContent = "";
+            return;
+        }
+
+        let html = "";
+        for (let drink of drinks) {
+            html += buildCard(drink);
+        }
+
+        grid.innerHTML = html;
+        countEl.textContent = drinks.length + " cocktails";
+    }
+
+    async function loadPopular() {
+        document.querySelector("#cocktail-grid").innerHTML = `<p class="loading-msg">Loading...</p>`;
+
+        const letters = ["m", "b", "s", "g", "a"];
+        const promises = letters.map(l => fetch(API + "/search.php?f=" + l).then(r => r.json()));
+        const results = await Promise.all(promises);
+
+        let drinks = [];
+        for (let result of results) {
+            if (result.drinks) {
+                drinks = drinks.concat(result.drinks);
+            }
+        }
+
+        drawCards(drinks.slice(0, 20));
+    }
+
+    async function loadByCategory(category) {
+        document.querySelector("#cocktail-grid").innerHTML = `<p class="loading-msg">Loading...</p>`;
+
+        let url;
+
+        if (category === "Non_Alcoholic") {
+            url = API + "/filter.php?a=Non_Alcoholic";
+        } else {
+            url = API + "/filter.php?c=" + encodeURIComponent(category);
+        }
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        drawCards((data.drinks || []).slice(0, 20));
+    }
+
+    async function searchCocktails() {
+        const query = document.querySelector("#search-input").value.trim();
+        if (!query) return;
+
+        document.querySelector("#cocktail-grid").innerHTML = `<p class="loading-msg">Searching...</p>`;
+
+        const response = await fetch(API + "/search.php?s=" + encodeURIComponent(query));
+        const data = await response.json();
+
+        drawCards(data.drinks);
+    }
+
+    function filterClick(btn, category) {
+        document.querySelectorAll(".filter-btn").forEach(function(b) {
+            b.classList.remove("active");
+        });
+
+        btn.classList.add("active");
+
+        if (category === "popular") {
+            loadPopular();
+        } else {
+            loadByCategory(category);
+        }
+    }
+
+    function handleBookmark(id) {
+        if (!isLoggedIn()) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        const added = toggleFavourite(id);
+        const btn = document.querySelector("#bm-" + id);
+
+        btn.textContent = added ? "♥" : "♡";
+
+        if (added) {
+            btn.classList.add("saved");
+        } else {
+            btn.classList.remove("saved");
+        }
+    }
+
+    loadPopular();
+</script>
+
+</body>
 </html>
