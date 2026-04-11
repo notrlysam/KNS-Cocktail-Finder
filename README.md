@@ -28,7 +28,7 @@ I coordinated the overall development of the project by organizing team meetings
 
 Additionally, I assisted in implementing various components of the application, ensuring smooth interaction between the frontend, API, and database. I contributed to testing and debugging to resolve issues and improve application stability.
 
-Finally, I was responsible for completing the project report, while ensuring that all requirements were met before submission.
+Finally, I was responsible for completing the full project report and ensuring that all requirements were met before submission.
 
 
 
