@@ -22,6 +22,14 @@ Done by:
 
 - Nirvana Kandhai (Marketing):
 
+I was responsible for the branding, presentation, and user engagement features of the application.
+
+I defined the problem statement, identified the target audience, and developed the app's brand identity — including the name KNS Cocktail Finder, the tagline, and the overall content strategy. I created the full project report, covering the problem description, solution description, UI design section, colour palette and typography documentation, technologies table, application screenshots, and deliverable links.
+
+I designed and produced the 5-slide presentation deck used for the video submission, following the required outline: intro, problem, solution, features, and live demo.
+
+I implemented the **Community Comments and Ratings** feature (`kns-comments.js` and `kns-comments.css`), which allows logged-in users to rate any cocktail out of five stars and leave written comments. This feature includes a community average rating display, character-limited comment input, delete functionality, toast notifications, and full localStorage persistence — all styled to match the application's design system.
+
 - Shivesh Maharaj (Lead):
 
 I coordinated the overall development of the project by organizing team meetings, defining the project scope, and ensuring that all members stayed on track with their assigned tasks. I was responsible for monitoring progress and verifying that each team member contributed to the GitHub repository.
