@@ -26,7 +26,7 @@ Done by:
 
 I coordinated the overall development of the project by organizing team meetings, defining the project scope, and ensuring that all members stayed on track with their assigned tasks. I was responsible for monitoring progress and verifying that each team member contributed to the GitHub repository.
 
-Additionally, I assisted in integrating various components of the application, ensuring smooth interaction between the frontend, API, and database. I contributed to testing and debugging to resolve issues and improve application stability.
+Additionally, I assisted in implementing various components of the application, ensuring smooth interaction between the frontend, API, and database. I contributed to testing and debugging to resolve issues and improve application stability.
 
 Finally, I was responsible for completing the project report, while ensuring that all requirements were met before submission.
 
