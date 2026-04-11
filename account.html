@@ -1,115 +1,126 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cocktail - KNS Cocktail Finder</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.json">
-</head>
-<body>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="manifest" href="manifest.json" />
+  </head>
+  <body>
+    <nav>
+      <a href="index.html" class="nav-brand">🍹 KNS Cocktails</a>
 
-<nav>
-    <a href="index.html" class="nav-brand">🍹 KNS Cocktails</a>
-
-    <div class="nav-links">
+      <div class="nav-links">
         <a href="index.html">Home</a>
-    </div>
+      </div>
 
-    <div class="nav-links">
+      <div class="nav-links">
         <a href="login.html" class="btn btn-gold" id="nav-login-btn">Login</a>
 
-        <div id="nav-user-area" style="display:none; align-items:center; gap:10px;">
-            <span style="color:#9b9b8e; font-size:0.88rem;">Hi, <strong style="color:#c9a84c;">Bob</strong></span>
-            <a href="dashboard.html" class="btn btn-outline">Dashboard</a>
-            <button onclick="logout()" class="btn btn-outline">Logout</button>
+        <div
+          id="nav-user-area"
+          style="display: none; align-items: center; gap: 10px"
+        >
+          <span style="color: #9b9b8e; font-size: 0.88rem"
+            >Hi, <strong style="color: #c9a84c">Bob</strong></span
+          >
+          <a href="dashboard.html" class="btn btn-outline">Dashboard</a>
+          <button onclick="logout()" class="btn btn-outline">Logout</button>
         </div>
-    </div>
-</nav>
+      </div>
+    </nav>
 
-<div class="section">
+    <div class="section">
+      <p class="loading-msg" id="loading-state">Loading cocktail...</p>
 
-    <p class="loading-msg" id="loading-state">Loading cocktail...</p>
-
-    <div id="error-state" style="display:none;" class="empty-state">
-        <p style="font-size:1.2rem; margin-bottom:12px;">Cocktail not found 😕</p>
+      <div id="error-state" style="display: none" class="empty-state">
+        <p style="font-size: 1.2rem; margin-bottom: 12px">
+          Cocktail not found 😕
+        </p>
         <a href="index.html" class="btn btn-gold">← Back to Home</a>
-    </div>
+      </div>
 
-    <div id="page-content" style="display:none;">
-
+      <div id="page-content" style="display: none">
         <button class="back-btn" onclick="history.back()">← Back</button>
 
         <div class="detail-layout">
-            <div>
-                <img id="drink-img" src="" alt="" class="detail-image">
-            </div>
-            <div>
-                <div id="drink-badges"></div>
-                <h1 class="drink-name" id="drink-name"></h1>
-                <p class="drink-meta" id="drink-meta"></p>
+          <div>
+            <img id="drink-img" src="" alt="" class="detail-image" />
+          </div>
+          <div>
+            <div id="drink-badges"></div>
+            <h1 class="drink-name" id="drink-name"></h1>
+            <p class="drink-meta" id="drink-meta"></p>
 
-                <button class="btn-bookmark" id="bookmark-btn" onclick="handleBookmark()">
-                    ♡ Save to Favourites
-                </button>
+            <button
+              class="btn-bookmark"
+              id="bookmark-btn"
+              onclick="handleBookmark()"
+            >
+              ♡ Save to Favourites
+            </button>
 
-                <p class="login-prompt" id="login-prompt" style="display:none;">
-                    <a href="login.html">Login</a> to save this cocktail to your favourites.
-                </p>
-            </div>
+            <p class="login-prompt" id="login-prompt" style="display: none">
+              <a href="login.html">Login</a> to save this cocktail to your
+              favourites.
+            </p>
+          </div>
         </div>
 
         <div class="content-row">
-            <div class="content-block">
-                <p class="content-block-title">Ingredients</p>
-                <div id="ingredients-list"></div>
-            </div>
-            <div class="content-block">
-                <p class="content-block-title">Instructions</p>
-                <p class="instructions-text" id="instructions-text"></p>
-            </div>
+          <div class="content-block">
+            <p class="content-block-title">Ingredients</p>
+            <div id="ingredients-list"></div>
+          </div>
+          <div class="content-block">
+            <p class="content-block-title">Instructions</p>
+            <p class="instructions-text" id="instructions-text"></p>
+          </div>
         </div>
-
+      </div>
     </div>
 
-</div>
+    <footer>
+      <span>KNS Cocktails</span> &bull; Powered by TheCocktailDB &bull; INFO
+      1601 &bull; KNS Innovations
+    </footer>
 
-<footer>
-    <span>KNS Cocktails</span> &bull; Powered by TheCocktailDB &bull; INFO 1601 &bull; KNS Innovations
-</footer>
+    <script src="js/app.js"></script>
+    <script>
+      var API = "https://www.thecocktaildb.com/api/json/v1/1";
+      var currentId = null;
 
-<script src="js/app.js"></script>
-<script>
-    var API = "https://www.thecocktaildb.com/api/json/v1/1";
-    var currentId = null;
+      updateNavbar();
 
-    updateNavbar();
+      var params = new URLSearchParams(window.location.search);
+      var drinkId = params.get("id");
 
-    var params = new URLSearchParams(window.location.search);
-    var drinkId = params.get("id");
-
-    if (!drinkId) {
+      if (!drinkId) {
         document.querySelector("#loading-state").style.display = "none";
         document.querySelector("#error-state").style.display = "block";
-    } else {
+      } else {
         loadDrink(drinkId);
-    }
+      }
 
-    async function loadDrink(id) {
+      async function loadDrink(id) {
         var response = await fetch(API + "/lookup.php?i=" + id);
         var data = await response.json();
         var drink = data.drinks ? data.drinks[0] : null;
 
         if (!drink) {
-            document.querySelector("#loading-state").style.display = "none";
-            document.querySelector("#error-state").style.display = "block";
-            return;
+          document.querySelector("#loading-state").style.display = "none";
+          document.querySelector("#error-state").style.display = "block";
+          return;
         }
         renderDrink(drink);
-    }
+      }
 
-    function renderDrink(drink) {
+      function renderDrink(drink) {
         currentId = drink.idDrink;
         document.title = drink.strDrink + " - KNS Cocktail Finder";
 
@@ -118,8 +129,10 @@
         document.querySelector("#drink-name").textContent = drink.strDrink;
 
         var badges = "";
-        if (drink.strAlcoholic) badges += `<span class="drink-badge">${drink.strAlcoholic}</span>`;
-        if (drink.strCategory) badges += `<span class="drink-badge">${drink.strCategory}</span>`;
+        if (drink.strAlcoholic)
+          badges += `<span class="drink-badge">${drink.strAlcoholic}</span>`;
+        if (drink.strCategory)
+          badges += `<span class="drink-badge">${drink.strCategory}</span>`;
         document.querySelector("#drink-badges").innerHTML = badges;
 
         var parts = [];
@@ -129,53 +142,55 @@
 
         var ingredientsHTML = "";
         for (var i = 1; i <= 15; i++) {
-            var ing = drink["strIngredient" + i];
-            var meas = drink["strMeasure" + i];
-            if (ing && ing.trim() !== "") {
-                ingredientsHTML += `
+          var ing = drink["strIngredient" + i];
+          var meas = drink["strMeasure" + i];
+          if (ing && ing.trim() !== "") {
+            ingredientsHTML += `
                     <div class="ingredient-row">
                         <span class="ingredient-name">${ing.trim()}</span>
                         <span class="ingredient-measure">${meas ? meas.trim() : ""}</span>
                     </div>`;
-            }
+          }
         }
         document.querySelector("#ingredients-list").innerHTML = ingredientsHTML;
-        document.querySelector("#instructions-text").textContent = drink.strInstructions || "No instructions available.";
+        document.querySelector("#instructions-text").textContent =
+          drink.strInstructions || "No instructions available.";
 
         if (isLoggedIn()) {
-            document.querySelector("#bookmark-btn").style.display = "inline-block";
-            document.querySelector("#login-prompt").style.display = "none";
-            updateBookmarkBtn();
+          document.querySelector("#bookmark-btn").style.display =
+            "inline-block";
+          document.querySelector("#login-prompt").style.display = "none";
+          updateBookmarkBtn();
         } else {
-            document.querySelector("#bookmark-btn").style.display = "none";
-            document.querySelector("#login-prompt").style.display = "block";
+          document.querySelector("#bookmark-btn").style.display = "none";
+          document.querySelector("#login-prompt").style.display = "block";
         }
 
         document.querySelector("#loading-state").style.display = "none";
         document.querySelector("#page-content").style.display = "block";
-    }
+      }
 
-    function updateBookmarkBtn() {
+      function updateBookmarkBtn() {
         var btn = document.querySelector("#bookmark-btn");
         var saved = isFavourite(currentId);
-        btn.textContent = saved ? "♥ Saved to Favourites" : "♡ Save to Favourites";
+        btn.textContent = saved
+          ? "♥ Saved to Favourites"
+          : "♡ Save to Favourites";
         if (saved) {
-            btn.classList.add("saved");
+          btn.classList.add("saved");
         } else {
-            btn.classList.remove("saved");
+          btn.classList.remove("saved");
         }
-    }
+      }
 
-    function handleBookmark() {
+      function handleBookmark() {
         if (!isLoggedIn()) {
-            window.location.href = "login.html";
-            return;
+          window.location.href = "login.html";
+          return;
         }
         toggleFavourite(currentId);
         updateBookmarkBtn();
-    }
-</script>
-
-</body>
+      }
+    </script>
+  </body>
 </html>
-

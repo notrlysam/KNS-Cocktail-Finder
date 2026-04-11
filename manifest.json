@@ -1,0 +1,37 @@
+{
+  "name": "KNS Cocktail Finder",
+  "short_name": "KNS Cocktail",
+  "id": "/KNS-Cocktail-Finder/index.html",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+
+  "icons": [
+    {
+      "src": "/assets/kns-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/kns-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+
+  "screenshots": [
+    {
+      "src": "assets/screenshot-desktop.png",
+      "sizes": "1895x967",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "assets/screenshot-mobile.png",
+      "sizes": "392x851",
+      "type": "image/png"
+    }
+  ]
+}

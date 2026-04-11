@@ -1,80 +1,97 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard - KNS Cocktail Finder</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.json">
-</head>
-<body>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="manifest" href="manifest.json" />
+  </head>
+  <body>
+    <nav>
+      <a href="index.html" class="nav-brand">🍹 KNS Cocktails</a>
 
-<nav>
-    <a href="index.html" class="nav-brand">🍹 KNS Cocktails</a>
-
-    <div class="nav-links">
+      <div class="nav-links">
         <a href="index.html">Home</a>
         <a href="dashboard.html">Dashboard</a>
-    </div>
+      </div>
 
-    <div class="nav-links" style="align-items:center; gap:10px;">
-        <span style="color:#9b9b8e; font-size:0.88rem;">Hi, <strong style="color:#c9a84c;">Bob</strong></span>
+      <div class="nav-links" style="align-items: center; gap: 10px">
+        <span style="color: #9b9b8e; font-size: 0.88rem"
+          >Hi, <strong style="color: #c9a84c">Bob</strong></span
+        >
         <button onclick="logout()" class="btn btn-outline">Logout</button>
-    </div>
-</nav>
+      </div>
+    </nav>
 
-<div class="section">
-
-    <div class="welcome-banner">
+    <div class="section">
+      <div class="welcome-banner">
         <div>
-            <h2>Welcome back, <span>Bob</span> 🍹</h2>
-            <p id="welcome-sub">Loading your collection...</p>
+          <h2>Welcome back, <span>Bob</span> 🍹</h2>
+          <p id="welcome-sub">Loading your collection...</p>
         </div>
-        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-            <span class="saved-pill">♥ <span id="fav-count">0</span> saved</span>
-            <a href="index.html" class="btn btn-outline">Explore More</a>
+        <div
+          style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap"
+        >
+          <span class="saved-pill">♥ <span id="fav-count">0</span> saved</span>
+          <a href="index.html" class="btn btn-outline">Explore More</a>
         </div>
-    </div>
+      </div>
 
-    <div class="tab-bar">
-        <button class="tab-btn active" id="tab-fav-btn" onclick="switchTab('favourites')">My Favourites</button>
-        <button class="tab-btn" id="tab-explore-btn" onclick="switchTab('explore')">Explore</button>
-    </div>
+      <div class="tab-bar">
+        <button
+          class="tab-btn active"
+          id="tab-fav-btn"
+          onclick="switchTab('favourites')"
+        >
+          My Favourites
+        </button>
+        <button
+          class="tab-btn"
+          id="tab-explore-btn"
+          onclick="switchTab('explore')"
+        >
+          Explore
+        </button>
+      </div>
 
-    <div id="panel-favourites">
+      <div id="panel-favourites">
         <div class="section-header">
-            <h2>Saved <span>Cocktails</span></h2>
+          <h2>Saved <span>Cocktails</span></h2>
         </div>
         <div class="card-grid" id="fav-grid">
-            <p class="loading-msg">Loading your favourites...</p>
+          <p class="loading-msg">Loading your favourites...</p>
         </div>
-    </div>
+      </div>
 
-    <div id="panel-explore" style="display:none;">
+      <div id="panel-explore" style="display: none">
         <div class="section-header">
-            <h2>Discover <span>New Drinks</span></h2>
+          <h2>Discover <span>New Drinks</span></h2>
         </div>
         <div class="card-grid" id="explore-grid">
-            <p class="loading-msg">Loading cocktails...</p>
+          <p class="loading-msg">Loading cocktails...</p>
         </div>
+      </div>
     </div>
 
-</div>
+    <footer>
+      <span>KNS Cocktails</span> &bull; Powered by TheCocktailDB &bull; INFO
+      1601 &bull; KNS Innovations
+    </footer>
 
-<footer>
-    <span>KNS Cocktails</span> &bull; Powered by TheCocktailDB &bull; INFO 1601 &bull; KNS Innovations
-</footer>
+    <script src="js/app.js"></script>
+    <script>
+      var API = "https://www.thecocktaildb.com/api/json/v1/1";
 
-<script src="js/app.js"></script>
-<script>
-    var API = "https://www.thecocktaildb.com/api/json/v1/1";
-
-    if (!isLoggedIn()) {
+      if (!isLoggedIn()) {
         window.location.href = "login.html";
-    }
+      }
 
-    function buildCard(drink) {
+      function buildCard(drink) {
         var saved = isFavourite(drink.idDrink);
         var icon = saved ? "♥" : "♡";
         var cls = saved ? "bookmark-btn saved" : "bookmark-btn";
@@ -91,114 +108,123 @@
                     <a href="account.html?id=${drink.idDrink}" class="btn-card">View Recipe</a>
                 </div>
             </div>`;
-    }
+      }
 
-    function refreshStats() {
+      function refreshStats() {
         var count = getFavourites().length;
         document.querySelector("#fav-count").textContent = count;
-        document.querySelector("#welcome-sub").textContent = count === 0
+        document.querySelector("#welcome-sub").textContent =
+          count === 0
             ? "You have no saved cocktails yet."
-            : "You have " + count + " saved cocktail" + (count !== 1 ? "s" : "") + ".";
-    }
+            : "You have " +
+              count +
+              " saved cocktail" +
+              (count !== 1 ? "s" : "") +
+              ".";
+      }
 
-    async function loadFavourites() {
+      async function loadFavourites() {
         var grid = document.querySelector("#fav-grid");
         var favIds = getFavourites();
         refreshStats();
 
         if (favIds.length === 0) {
-            grid.innerHTML = `
+          grid.innerHTML = `
                 <div class="empty-state">
                     <p style="font-size:2.5rem; margin-bottom:12px;">🍸</p>
                     <p style="margin-bottom:8px;">No saved cocktails yet</p>
                     <p>Go to the <a href="index.html">home page</a> and tap ♡ on cocktails you like!</p>
                 </div>`;
-            return;
+          return;
         }
 
         grid.innerHTML = `<p class="loading-msg">Loading your favourites...</p>`;
 
-        var promises = favIds.map(function(id) {
-            return fetch(API + "/lookup.php?i=" + id).then(function(r) { return r.json(); });
+        var promises = favIds.map(function (id) {
+          return fetch(API + "/lookup.php?i=" + id).then(function (r) {
+            return r.json();
+          });
         });
 
         var results = await Promise.all(promises);
 
         var html = "";
         for (var result of results) {
-            if (result.drinks && result.drinks[0]) {
-                html += buildCard(result.drinks[0]);
-            }
+          if (result.drinks && result.drinks[0]) {
+            html += buildCard(result.drinks[0]);
+          }
         }
         grid.innerHTML = html;
-    }
+      }
 
-    var exploreLoaded = false;
+      var exploreLoaded = false;
 
-    async function loadExplore() {
+      async function loadExplore() {
         if (exploreLoaded) return;
 
         var grid = document.querySelector("#explore-grid");
         var letters = ["c", "d", "l", "r", "w"];
-        var promises = letters.map(function(l) {
-            return fetch(API + "/search.php?f=" + l).then(function(r) { return r.json(); });
+        var promises = letters.map(function (l) {
+          return fetch(API + "/search.php?f=" + l).then(function (r) {
+            return r.json();
+          });
         });
 
         var results = await Promise.all(promises);
         var drinks = [];
 
         for (var result of results) {
-            if (result.drinks) drinks = drinks.concat(result.drinks);
+          if (result.drinks) drinks = drinks.concat(result.drinks);
         }
 
         var html = "";
         for (var drink of drinks.slice(0, 16)) {
-            html += buildCard(drink);
+          html += buildCard(drink);
         }
         grid.innerHTML = html;
         exploreLoaded = true;
-    }
+      }
 
-    function switchTab(tab) {
+      function switchTab(tab) {
         var favPanel = document.querySelector("#panel-favourites");
         var explorePanel = document.querySelector("#panel-explore");
         var favBtn = document.querySelector("#tab-fav-btn");
         var exploreBtn = document.querySelector("#tab-explore-btn");
 
         if (tab === "favourites") {
-            favPanel.style.display = "block";
-            explorePanel.style.display = "none";
-            favBtn.classList.add("active");
-            exploreBtn.classList.remove("active");
-            loadFavourites();
+          favPanel.style.display = "block";
+          explorePanel.style.display = "none";
+          favBtn.classList.add("active");
+          exploreBtn.classList.remove("active");
+          loadFavourites();
         } else {
-            favPanel.style.display = "none";
-            explorePanel.style.display = "block";
-            favBtn.classList.remove("active");
-            exploreBtn.classList.add("active");
-            loadExplore();
+          favPanel.style.display = "none";
+          explorePanel.style.display = "block";
+          favBtn.classList.remove("active");
+          exploreBtn.classList.add("active");
+          loadExplore();
         }
-    }
+      }
 
-    function handleBookmark(id) {
+      function handleBookmark(id) {
         var added = toggleFavourite(id);
         var btn = document.querySelector("#bm-" + id);
         btn.textContent = added ? "♥" : "♡";
         if (added) {
-            btn.classList.add("saved");
+          btn.classList.add("saved");
         } else {
-            btn.classList.remove("saved");
+          btn.classList.remove("saved");
         }
         refreshStats();
 
-        var onFavTab = document.querySelector("#panel-favourites").style.display !== "none";
+        var onFavTab =
+          document.querySelector("#panel-favourites").style.display !== "none";
         if (!added && onFavTab) {
-            setTimeout(loadFavourites, 300);
+          setTimeout(loadFavourites, 300);
         }
-    }
+      }
 
-    loadFavourites();
-</script>
-
-</body>
+      loadFavourites();
+    </script>
+  </body>
 </html>

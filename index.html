@@ -1,75 +1,110 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="KNS Cocktail Finder - Discover cocktail recipes">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="KNS Cocktail Finder - Discover cocktail recipes"
+    />
     <title>KNS Cocktail Finder</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.json">
-</head>
-<body>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#000000" />
+  </head>
+  <body>
+    <nav>
+      <a href="index.html" class="nav-brand">🍹 KNS Cocktails</a>
 
-<nav>
-    <a href="index.html" class="nav-brand">🍹 KNS Cocktails</a>
-
-    <div class="nav-links">
+      <div class="nav-links">
         <a href="index.html">Home</a>
         <a href="#explore">Explore</a>
-    </div>
+      </div>
 
-    <div class="nav-links">
+      <div class="nav-links">
         <a href="login.html" class="btn btn-gold" id="nav-login-btn">Login</a>
 
-        <div id="nav-user-area" style="display:none; align-items:center; gap:10px;">
-            <span style="color:#9b9b8e; font-size:0.88rem;">Hi, <strong style="color:#c9a84c;">Bob</strong></span>
-            <a href="dashboard.html" class="btn btn-outline">Dashboard</a>
-            <button onclick="logout()" class="btn btn-outline">Logout</button>
+        <div
+          id="nav-user-area"
+          style="display: none; align-items: center; gap: 10px"
+        >
+          <span style="color: #9b9b8e; font-size: 0.88rem"
+            >Hi, <strong style="color: #c9a84c">Bob</strong></span
+          >
+          <a href="dashboard.html" class="btn btn-outline">Dashboard</a>
+          <button onclick="logout()" class="btn btn-outline">Logout</button>
         </div>
-    </div>
-</nav>
+      </div>
+    </nav>
 
-<div class="hero">
-    <p class="eyebrow">Discover &amp; Explore</p>
-    <h1>Find Your Perfect <span>Cocktail</span></h1>
-    <p class="subtitle">Browse hundreds of cocktail recipes, save your favourites, and try something new.</p>
+    <div class="hero">
+      <p class="eyebrow">Discover &amp; Explore</p>
+      <h1>Find Your Perfect <span>Cocktail</span></h1>
+      <p class="subtitle">
+        Browse hundreds of cocktail recipes, save your favourites, and try
+        something new.
+      </p>
 
-    <div class="search-bar">
-        <input type="text" id="search-input" placeholder="Search cocktails... e.g. Margarita">
+      <div class="search-bar">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search cocktails... e.g. Margarita"
+        />
         <button onclick="searchCocktails()">Search</button>
+      </div>
+
+      <div class="filters">
+        <button
+          class="filter-btn active"
+          onclick="filterClick(this, 'popular')"
+        >
+          Popular
+        </button>
+        <button class="filter-btn" onclick="filterClick(this, 'Cocktail')">
+          Cocktail
+        </button>
+        <button class="filter-btn" onclick="filterClick(this, 'Shot')">
+          Shot
+        </button>
+        <button
+          class="filter-btn"
+          onclick="filterClick(this, 'Punch / Party Drink')"
+        >
+          Punch
+        </button>
+        <button class="filter-btn" onclick="filterClick(this, 'Non_Alcoholic')">
+          Non-Alcoholic
+        </button>
+      </div>
     </div>
 
-    <div class="filters">
-        <button class="filter-btn active" onclick="filterClick(this, 'popular')">Popular</button>
-        <button class="filter-btn" onclick="filterClick(this, 'Cocktail')">Cocktail</button>
-        <button class="filter-btn" onclick="filterClick(this, 'Shot')">Shot</button>
-        <button class="filter-btn" onclick="filterClick(this, 'Punch / Party Drink')">Punch</button>
-        <button class="filter-btn" onclick="filterClick(this, 'Non_Alcoholic')">Non-Alcoholic</button>
-    </div>
-</div>
-
-<div class="section" id="explore">
-    <div class="section-header">
+    <div class="section" id="explore">
+      <div class="section-header">
         <h2>Popular <span>Cocktails</span></h2>
         <span class="result-count" id="result-count"></span>
-    </div>
-    <div class="card-grid" id="cocktail-grid">
+      </div>
+      <div class="card-grid" id="cocktail-grid">
         <p class="loading-msg">Loading cocktails...</p>
+      </div>
     </div>
-</div>
 
-<footer>
-    <span>KNS Cocktails</span> &bull; Powered by TheCocktailDB &bull; INFO 1601 &bull; KNS Innovations
-</footer>
+    <footer>
+      <span>KNS Cocktails</span> &bull; Powered by TheCocktailDB &bull; INFO
+      1601 &bull; KNS Innovations
+    </footer>
 
-<script src="js/app.js"></script>
-<script>
-    const API = "https://www.thecocktaildb.com/api/json/v1/1";
+    <script src="js/app.js"></script>
+    <script>
+      const API = "https://www.thecocktaildb.com/api/json/v1/1";
 
-    updateNavbar();
+      updateNavbar();
 
-    function buildCard(drink) {
+      function buildCard(drink) {
         const saved = isFavourite(drink.idDrink);
         const icon = saved ? "♥" : "♡";
         const cls = saved ? "bookmark-btn saved" : "bookmark-btn";
@@ -86,91 +121,98 @@
                     <a href="account.html?id=${drink.idDrink}" class="btn-card">View Recipe</a>
                 </div>
             </div>`;
-    }
+      }
 
-    function drawCards(drinks) {
+      function drawCards(drinks) {
         const grid = document.querySelector("#cocktail-grid");
         const countEl = document.querySelector("#result-count");
 
         if (!drinks || drinks.length === 0) {
-            grid.innerHTML = `<p class="loading-msg">No cocktails found.</p>`;
-            countEl.textContent = "";
-            return;
+          grid.innerHTML = `<p class="loading-msg">No cocktails found.</p>`;
+          countEl.textContent = "";
+          return;
         }
 
         let html = "";
         for (let drink of drinks) {
-            html += buildCard(drink);
+          html += buildCard(drink);
         }
 
         grid.innerHTML = html;
         countEl.textContent = drinks.length + " cocktails";
-    }
+      }
 
-    async function loadPopular() {
-        document.querySelector("#cocktail-grid").innerHTML = `<p class="loading-msg">Loading...</p>`;
+      async function loadPopular() {
+        document.querySelector("#cocktail-grid").innerHTML =
+          `<p class="loading-msg">Loading...</p>`;
 
         const letters = ["m", "b", "s", "g", "a"];
-        const promises = letters.map(l => fetch(API + "/search.php?f=" + l).then(r => r.json()));
+        const promises = letters.map((l) =>
+          fetch(API + "/search.php?f=" + l).then((r) => r.json()),
+        );
         const results = await Promise.all(promises);
 
         let drinks = [];
         for (let result of results) {
-            if (result.drinks) {
-                drinks = drinks.concat(result.drinks);
-            }
+          if (result.drinks) {
+            drinks = drinks.concat(result.drinks);
+          }
         }
 
         drawCards(drinks.slice(0, 20));
-    }
+      }
 
-    async function loadByCategory(category) {
-        document.querySelector("#cocktail-grid").innerHTML = `<p class="loading-msg">Loading...</p>`;
+      async function loadByCategory(category) {
+        document.querySelector("#cocktail-grid").innerHTML =
+          `<p class="loading-msg">Loading...</p>`;
 
         let url;
 
         if (category === "Non_Alcoholic") {
-            url = API + "/filter.php?a=Non_Alcoholic";
+          url = API + "/filter.php?a=Non_Alcoholic";
         } else {
-            url = API + "/filter.php?c=" + encodeURIComponent(category);
+          url = API + "/filter.php?c=" + encodeURIComponent(category);
         }
 
         const response = await fetch(url);
         const data = await response.json();
 
         drawCards((data.drinks || []).slice(0, 20));
-    }
+      }
 
-    async function searchCocktails() {
+      async function searchCocktails() {
         const query = document.querySelector("#search-input").value.trim();
         if (!query) return;
 
-        document.querySelector("#cocktail-grid").innerHTML = `<p class="loading-msg">Searching...</p>`;
+        document.querySelector("#cocktail-grid").innerHTML =
+          `<p class="loading-msg">Searching...</p>`;
 
-        const response = await fetch(API + "/search.php?s=" + encodeURIComponent(query));
+        const response = await fetch(
+          API + "/search.php?s=" + encodeURIComponent(query),
+        );
         const data = await response.json();
 
         drawCards(data.drinks);
-    }
+      }
 
-    function filterClick(btn, category) {
-        document.querySelectorAll(".filter-btn").forEach(function(b) {
-            b.classList.remove("active");
+      function filterClick(btn, category) {
+        document.querySelectorAll(".filter-btn").forEach(function (b) {
+          b.classList.remove("active");
         });
 
         btn.classList.add("active");
 
         if (category === "popular") {
-            loadPopular();
+          loadPopular();
         } else {
-            loadByCategory(category);
+          loadByCategory(category);
         }
-    }
+      }
 
-    function handleBookmark(id) {
+      function handleBookmark(id) {
         if (!isLoggedIn()) {
-            window.location.href = "login.html";
-            return;
+          window.location.href = "login.html";
+          return;
         }
 
         const added = toggleFavourite(id);
@@ -179,14 +221,20 @@
         btn.textContent = added ? "♥" : "♡";
 
         if (added) {
-            btn.classList.add("saved");
+          btn.classList.add("saved");
         } else {
-            btn.classList.remove("saved");
+          btn.classList.remove("saved");
         }
-    }
+      }
 
-    loadPopular();
-</script>
+      loadPopular();
 
-</body>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("/service-worker.js")
+          .then(() => console.log("Service Worker Registered"))
+          .catch((err) => console.log("SW error:", err));
+      }
+    </script>
+  </body>
 </html>

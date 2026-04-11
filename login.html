@@ -1,82 +1,88 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - KNS Cocktail Finder</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.json">
-</head>
-<body>
-
-<nav>
-    <a href="index.html" class="nav-brand">🍹 KNS Cocktails</a>
-    <div class="nav-links">
+    <link rel="stylesheet" href="css/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="manifest" href="manifest.json" />
+  </head>
+  <body>
+    <nav>
+      <a href="index.html" class="nav-brand">🍹 KNS Cocktails</a>
+      <div class="nav-links">
         <a href="index.html">Home</a>
-    </div>
-</nav>
+      </div>
+    </nav>
 
-<div class="login-page">
-    <div class="login-card">
-
+    <div class="login-page">
+      <div class="login-card">
         <div class="login-logo">🍹 KNS</div>
         <p class="login-tagline">Cocktail Finder</p>
         <h2>Welcome Back</h2>
 
         <div class="hint-box">
-            💡 Username: <strong>bob</strong> or <strong>bob@mail.com</strong><br>
-            Password: <strong>bobpass</strong>
+          💡 Username: <strong>bob</strong> or <strong>bob@mail.com</strong
+          ><br />
+          Password: <strong>bobpass</strong>
         </div>
 
         <div class="alert" id="alert-box"></div>
 
         <label for="identifier">Username or Email</label>
-        <input type="text" id="identifier" placeholder="bob or bob@mail.com">
+        <input type="text" id="identifier" placeholder="bob or bob@mail.com" />
 
         <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Enter your password">
+        <input
+          type="password"
+          id="password"
+          placeholder="Enter your password"
+        />
 
         <button class="btn-login" onclick="doLogin()">Login</button>
 
         <div class="back-link">
-            <a href="index.html">← Back to Home</a>
+          <a href="index.html">← Back to Home</a>
         </div>
-
+      </div>
     </div>
-</div>
 
-<footer>
-    <span>KNS Cocktails</span> &bull; INFO 1601 &bull; KNS Innovations
-</footer>
+    <footer>
+      <span>KNS Cocktails</span> &bull; INFO 1601 &bull; KNS Innovations
+    </footer>
 
-<script>
-    if (isLoggedIn()) {
+    <script>
+      if (isLoggedIn()) {
         window.location.href = "dashboard.html";
-    }
+      }
 
-    function doLogin() {
+      function doLogin() {
         const identifier = document.querySelector("#identifier").value.trim();
         const password = document.querySelector("#password").value;
         const alertBox = document.querySelector("#alert-box");
 
         if (!identifier || !password) {
-            alertBox.textContent = "Fill all fields.";
-            alertBox.style.display = "block";
-            return;
+          alertBox.textContent = "Fill all fields.";
+          alertBox.style.display = "block";
+          return;
         }
 
-        if ((identifier === "bob" || identifier === "bob@mail.com") && password === "bobpass") {
-            localStorage.setItem("kns_user", "bob");
+        if (
+          (identifier === "bob" || identifier === "bob@mail.com") &&
+          password === "bobpass"
+        ) {
+          localStorage.setItem("kns_user", "bob");
 
-            window.location.href = "dashboard.html";
+          window.location.href = "dashboard.html";
         } else {
-            alertBox.textContent = "Invalid login.";
-            alertBox.style.display = "block";
+          alertBox.textContent = "Invalid login.";
+          alertBox.style.display = "block";
         }
-    }
-</script>
-
-</body>
+      }
+    </script>
+  </body>
 </html>
-
