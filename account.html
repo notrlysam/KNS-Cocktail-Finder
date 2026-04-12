@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cocktail - KNS Cocktail Finder</title>
     <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="kns-comments.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@500;700&display=swap"
       rel="stylesheet"
@@ -82,6 +83,9 @@
             <p class="instructions-text" id="instructions-text"></p>
           </div>
         </div>
+
+        <div id="kns-community-mount"></div>
+
       </div>
     </div>
 
@@ -91,6 +95,7 @@
     </footer>
 
     <script src="js/app.js"></script>
+    <script src="kns-comments.js"></script>
     <script>
       var API = "https://www.thecocktaildb.com/api/json/v1/1";
       var currentId = null;
@@ -157,8 +162,7 @@
           drink.strInstructions || "No instructions available.";
 
         if (isLoggedIn()) {
-          document.querySelector("#bookmark-btn").style.display =
-            "inline-block";
+          document.querySelector("#bookmark-btn").style.display = "inline-block";
           document.querySelector("#login-prompt").style.display = "none";
           updateBookmarkBtn();
         } else {
@@ -168,6 +172,8 @@
 
         document.querySelector("#loading-state").style.display = "none";
         document.querySelector("#page-content").style.display = "block";
+
+        KNSComments.init(drink.idDrink, drink.strDrink);
       }
 
       function updateBookmarkBtn() {
