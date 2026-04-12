@@ -1,26 +1,14 @@
-/* ============================================================
-   KNS Cocktails — Comments & Ratings Module
-   Drop this file into your project as: kns-comments.js
-   
-   HOW TO USE:
-   1. Add <script src="kns-comments.js"></script> to your cocktail detail page
-   2. Add <link rel="stylesheet" href="kns-comments.css"> to your <head>
-   3. Call: KNSComments.init(cocktailId, cocktailName) when the detail page loads
-      e.g.  KNSComments.init("11001", "Mojito")
-   4. Make sure your auth stores the logged-in user as:
-         localStorage.setItem('kns_user', JSON.stringify({ username: 'bob' }))
-   ============================================================ */
-
 const KNSComments = (() => {
+
   // ── Storage helpers ───────────────────────────────────────
-  const RATINGS_KEY = "kns_ratings"; // { cocktailId: { username: 1-5 } }
-  const COMMENTS_KEY = "kns_comments"; // { cocktailId: [ { user, text, ts } ] }
+  const RATINGS_KEY  = 'kns_ratings';   // { cocktailId: { username: 1-5 } }
+  const COMMENTS_KEY = 'kns_comments';  // { cocktailId: [ { user, text, ts } ] }
 
   function getRatings() {
-    return JSON.parse(localStorage.getItem(RATINGS_KEY) || "{}");
+    return JSON.parse(localStorage.getItem(RATINGS_KEY) || '{}');
   }
   function getComments() {
-    return JSON.parse(localStorage.getItem(COMMENTS_KEY) || "{}");
+    return JSON.parse(localStorage.getItem(COMMENTS_KEY) || '{}');
   }
   function saveRatings(data) {
     localStorage.setItem(RATINGS_KEY, JSON.stringify(data));
@@ -30,14 +18,14 @@ const KNSComments = (() => {
   }
   function currentUser() {
     // Handles both plain string ("bob") AND JSON object ({username:"bob"})
-    const raw = localStorage.getItem("kns_user");
+    const raw = localStorage.getItem('kns_user');
     if (!raw) return null;
     try {
       const parsed = JSON.parse(raw);
       // If it parsed to a plain string e.g. JSON.parse('"bob"')
-      if (typeof parsed === "string") return parsed;
+      if (typeof parsed === 'string') return parsed;
       // If it parsed to an object e.g. {username:"bob"}
-      return parsed.username || parsed.name || "Guest";
+      return parsed.username || parsed.name || 'Guest';
     } catch {
       // raw is a plain unquoted string like "bob" — use it directly
       return raw;
@@ -83,9 +71,7 @@ const KNSComments = (() => {
     const u = currentUser();
     const all = getComments();
     if (!all[cocktailId]) return;
-    all[cocktailId] = all[cocktailId].filter(
-      (c) => !(c.ts === ts && c.user === u),
-    );
+    all[cocktailId] = all[cocktailId].filter(c => !(c.ts === ts && c.user === u));
     saveComments(all);
   }
 
@@ -93,17 +79,17 @@ const KNSComments = (() => {
   function timeAgo(ts) {
     const diff = Date.now() - ts;
     const mins = Math.floor(diff / 60000);
-    if (mins < 1) return "Just now";
+    if (mins < 1)  return 'Just now';
     if (mins < 60) return `${mins}m ago`;
     const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return `${hrs}h ago`;
+    if (hrs < 24)  return `${hrs}h ago`;
     const days = Math.floor(hrs / 24);
     return `${days}d ago`;
   }
 
   // ── Star SVG ──────────────────────────────────────────────
   function starSVG(filled, half = false) {
-    const color = filled ? "#c9a84c" : "#2a2d40";
+    const color = filled ? '#c9a84c' : '#2a2d40';
     return `<svg width="18" height="18" viewBox="0 0 24 24" fill="${color}" xmlns="http://www.w3.org/2000/svg">
       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
     </svg>`;
@@ -117,42 +103,38 @@ const KNSComments = (() => {
 
     container.innerHTML = `
       <div class="kns-star-picker" aria-label="Rate this cocktail">
-        ${[1, 2, 3, 4, 5]
-          .map(
-            (n) => `
-          <button class="kns-star-btn ${n <= current ? "active" : ""}"
+        ${[1,2,3,4,5].map(n => `
+          <button class="kns-star-btn ${n <= current ? 'active' : ''}"
                   data-star="${n}"
-                  aria-label="${n} star${n > 1 ? "s" : ""}"
-                  title="${n} star${n > 1 ? "s" : ""}">
+                  aria-label="${n} star${n > 1 ? 's' : ''}"
+                  title="${n} star${n > 1 ? 's' : ''}">
             ${starSVG(n <= current)}
           </button>
-        `,
-          )
-          .join("")}
-        <span class="kns-your-rating">${current ? `Your rating: ${current}/5` : "Rate this cocktail"}</span>
+        `).join('')}
+        <span class="kns-your-rating">${current ? `Your rating: ${current}/5` : 'Rate this cocktail'}</span>
       </div>`;
 
-    container.querySelectorAll(".kns-star-btn").forEach((btn) => {
-      btn.addEventListener("mouseenter", () => {
+    container.querySelectorAll('.kns-star-btn').forEach(btn => {
+      btn.addEventListener('mouseenter', () => {
         const hover = +btn.dataset.star;
-        container.querySelectorAll(".kns-star-btn").forEach((b) => {
+        container.querySelectorAll('.kns-star-btn').forEach(b => {
           b.innerHTML = starSVG(+b.dataset.star <= hover);
-          b.classList.toggle("active", +b.dataset.star <= hover);
+          b.classList.toggle('active', +b.dataset.star <= hover);
         });
       });
-      btn.addEventListener("mouseleave", () => {
+      btn.addEventListener('mouseleave', () => {
         const cur = getUserRating(cocktailId);
-        container.querySelectorAll(".kns-star-btn").forEach((b) => {
+        container.querySelectorAll('.kns-star-btn').forEach(b => {
           b.innerHTML = starSVG(+b.dataset.star <= cur);
-          b.classList.toggle("active", +b.dataset.star <= cur);
+          b.classList.toggle('active', +b.dataset.star <= cur);
         });
       });
-      btn.addEventListener("click", () => {
+      btn.addEventListener('click', () => {
         const stars = +btn.dataset.star;
         setUserRating(cocktailId, stars);
         renderStarPicker(cocktailId, containerId);
-        renderAverageRating(cocktailId, "kns-avg-rating");
-        showToast(`You rated this ${stars} star${stars > 1 ? "s" : ""}!`);
+        renderAverageRating(cocktailId, 'kns-avg-rating');
+        showToast(`You rated this ${stars} star${stars > 1 ? 's' : ''}!`);
       });
     });
   }
@@ -167,20 +149,20 @@ const KNSComments = (() => {
       return;
     }
     const fullStars = Math.floor(avg);
-    const halfStar = avg - fullStars >= 0.5;
+    const halfStar  = avg - fullStars >= 0.5;
     el.innerHTML = `
       <div class="kns-avg-display">
         <span class="kns-avg-number">${avg}</span>
         <div class="kns-avg-stars">
-          ${[1, 2, 3, 4, 5].map((n) => starSVG(n <= fullStars)).join("")}
+          ${[1,2,3,4,5].map(n => starSVG(n <= fullStars)).join('')}
         </div>
-        <span class="kns-avg-count">(${count} rating${count !== 1 ? "s" : ""})</span>
+        <span class="kns-avg-count">(${count} rating${count !== 1 ? 's' : ''})</span>
       </div>`;
   }
 
   // ── Render comments list ──────────────────────────────────
   function renderCommentsList(cocktailId) {
-    const list = document.getElementById("kns-comments-list");
+    const list = document.getElementById('kns-comments-list');
     if (!list) return;
     const comments = getCommentsFor(cocktailId);
     const u = currentUser();
@@ -190,9 +172,7 @@ const KNSComments = (() => {
       return;
     }
 
-    list.innerHTML = comments
-      .map(
-        (c) => `
+    list.innerHTML = comments.map(c => `
       <div class="kns-comment-card" data-ts="${c.ts}">
         <div class="kns-comment-header">
           <div class="kns-comment-avatar">${c.user.charAt(0).toUpperCase()}</div>
@@ -200,16 +180,14 @@ const KNSComments = (() => {
             <span class="kns-comment-user">${escapeHtml(c.user)}</span>
             <span class="kns-comment-time">${timeAgo(c.ts)}</span>
           </div>
-          ${c.user === u ? `<button class="kns-delete-btn" data-ts="${c.ts}" title="Delete comment">✕</button>` : ""}
+          ${c.user === u ? `<button class="kns-delete-btn" data-ts="${c.ts}" title="Delete comment">✕</button>` : ''}
         </div>
         <p class="kns-comment-text">${escapeHtml(c.text)}</p>
       </div>
-    `,
-      )
-      .join("");
+    `).join('');
 
-    list.querySelectorAll(".kns-delete-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
+    list.querySelectorAll('.kns-delete-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
         deleteComment(cocktailId, +btn.dataset.ts);
         renderCommentsList(cocktailId);
         updateCommentCount(cocktailId);
@@ -219,35 +197,28 @@ const KNSComments = (() => {
 
   // ── Update count badge ────────────────────────────────────
   function updateCommentCount(cocktailId) {
-    const el = document.getElementById("kns-comment-count");
+    const el = document.getElementById('kns-comment-count');
     const count = getCommentsFor(cocktailId).length;
     if (el) el.textContent = count;
   }
 
   // ── Toast notification ────────────────────────────────────
   function showToast(msg) {
-    let toast = document.getElementById("kns-toast");
+    let toast = document.getElementById('kns-toast');
     if (!toast) {
-      toast = document.createElement("div");
-      toast.id = "kns-toast";
+      toast = document.createElement('div');
+      toast.id = 'kns-toast';
       document.body.appendChild(toast);
     }
     toast.textContent = msg;
-    toast.classList.add("kns-toast-show");
+    toast.classList.add('kns-toast-show');
     clearTimeout(toast._timer);
-    toast._timer = setTimeout(
-      () => toast.classList.remove("kns-toast-show"),
-      2500,
-    );
+    toast._timer = setTimeout(() => toast.classList.remove('kns-toast-show'), 2500);
   }
 
   // ── Escape HTML ───────────────────────────────────────────
   function escapeHtml(str) {
-    return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
   // ── Build full section HTML ───────────────────────────────
@@ -271,11 +242,9 @@ const KNSComments = (() => {
         <div class="kns-divider-v"></div>
         <div class="kns-rate-block">
           <p class="kns-block-label">YOUR RATING</p>
-          ${
-            isLoggedIn
-              ? `<div id="kns-star-picker"></div>`
-              : `<p class="kns-login-prompt"><a href="login.html">Sign in</a> to rate this cocktail</p>`
-          }
+          ${isLoggedIn
+            ? `<div id="kns-star-picker"></div>`
+            : `<p class="kns-login-prompt"><a href="login.html">Sign in</a> to rate this cocktail</p>`}
         </div>
       </div>
 
@@ -285,9 +254,7 @@ const KNSComments = (() => {
           <h3 class="kns-comments-title">Comments <span class="kns-count-badge" id="kns-comment-count">0</span></h3>
         </div>
 
-        ${
-          isLoggedIn
-            ? `
+        ${isLoggedIn ? `
         <div class="kns-add-comment">
           <div class="kns-comment-avatar kns-my-avatar">${u.charAt(0).toUpperCase()}</div>
           <div class="kns-comment-input-wrap">
@@ -300,12 +267,10 @@ const KNSComments = (() => {
               <button id="kns-submit-btn" class="kns-submit-btn">Post Comment</button>
             </div>
           </div>
-        </div>`
-            : `
+        </div>` : `
         <div class="kns-login-banner">
           <a href="login.html">Sign in</a> to leave a comment
-        </div>`
-        }
+        </div>`}
 
         <div id="kns-comments-list" class="kns-comments-list"></div>
       </div>
@@ -313,49 +278,49 @@ const KNSComments = (() => {
   }
 
   // ── Public init ───────────────────────────────────────────
-  function init(cocktailId, cocktailName = "this cocktail") {
+  function init(cocktailId, cocktailName = 'this cocktail') {
     // Find or create mount point
-    let mount = document.getElementById("kns-community-mount");
+    let mount = document.getElementById('kns-community-mount');
     if (!mount) {
-      mount = document.createElement("div");
-      mount.id = "kns-community-mount";
+      mount = document.createElement('div');
+      mount.id = 'kns-community-mount';
       // Append after ingredients/instructions section if possible
-      const main = document.querySelector("main") || document.body;
+      const main = document.querySelector('main') || document.body;
       main.appendChild(mount);
     }
 
     mount.innerHTML = buildSectionHTML(cocktailName);
 
     // Render dynamic parts
-    renderAverageRating(cocktailId, "kns-avg-rating");
+    renderAverageRating(cocktailId, 'kns-avg-rating');
     if (currentUser()) {
-      renderStarPicker(cocktailId, "kns-star-picker");
+      renderStarPicker(cocktailId, 'kns-star-picker');
     }
     renderCommentsList(cocktailId);
     updateCommentCount(cocktailId);
 
     // Wire up comment submission
-    const input = document.getElementById("kns-comment-input");
-    const submit = document.getElementById("kns-submit-btn");
-    const chars = document.getElementById("kns-chars");
+    const input  = document.getElementById('kns-comment-input');
+    const submit = document.getElementById('kns-submit-btn');
+    const chars  = document.getElementById('kns-chars');
 
     if (input) {
-      input.addEventListener("input", () => {
+      input.addEventListener('input', () => {
         if (chars) chars.textContent = input.value.length;
         if (submit) submit.disabled = !input.value.trim();
       });
     }
     if (submit) {
       submit.disabled = true;
-      submit.addEventListener("click", () => {
+      submit.addEventListener('click', () => {
         const ok = addComment(cocktailId, input.value);
         if (ok) {
-          input.value = "";
-          if (chars) chars.textContent = "0";
+          input.value = '';
+          if (chars) chars.textContent = '0';
           submit.disabled = true;
           renderCommentsList(cocktailId);
           updateCommentCount(cocktailId);
-          showToast("Comment posted!");
+          showToast('Comment posted!');
         }
       });
     }
@@ -363,3 +328,4 @@ const KNSComments = (() => {
 
   return { init };
 })();
+
